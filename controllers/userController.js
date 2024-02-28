@@ -59,8 +59,13 @@ const loginUser = asyncHandler(async (req, res) => {
                 email: user.email,
                 id: user.id,
             },
-        });
+        }, process.env.ACCESS_TOKEN_SECRET,
+        {expiresIn: "1m"}
+        );
         res.status(200).json({accessToken});
+    } else {
+        res.status(401)
+        throw new Error("Email or password is not valid")
     }
     
     
@@ -72,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route POST /user/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
-    res.json({message: "Current user information"});
+    res.json(req.user);
 });
 
 module.exports = {registerUser, loginUser, currentUser}
